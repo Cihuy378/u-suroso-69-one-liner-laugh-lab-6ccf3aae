@@ -2,7 +2,8 @@
 //
 // The entry is one line of text held in the repo's entry.txt. This program
 // copies that line to the output path unchanged, so the graded artifact is
-// exactly the line we wrote, byte for byte, on every run.
+// exactly the line we wrote, byte for byte, on every run — no formatting,
+// no trailing newline added, nothing reinterpreted along the way.
 //
 // Nothing here touches the network, reads an environment secret, or pulls
 // in a dependency: the whole entry is the copy below plus its check.
@@ -23,7 +24,9 @@ copyFileSync(sourcePath, outputPath);
 const written = readFileSync(outputPath);
 const source = readFileSync(sourcePath);
 if (!written.equals(source)) {
-  console.error("entry.txt check failed: /output/entry.txt differs from entry.txt");
+  console.error(
+    `entry.txt check failed: /output/entry.txt (${written.length} bytes) differs from repo entry.txt (${source.length} bytes) — refusing to enter a corrupted copy`,
+  );
   process.exit(1);
 }
 
